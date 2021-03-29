@@ -1,0 +1,184 @@
+<app-header></app-header>
+
+<div class="container">
+  <h1 class="display-4">Teambeheer</h1>
+
+  <p>Beheer hier de teams binnen de organisatie.</p>
+  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addTeam"><fa-icon [icon]="faAdd"></fa-icon> Team toevoegen</button>
+
+  <table class="table table-hover table-light">
+    <thead><tr>
+      <th>Naam</th>
+      <th>Bewerken</th>
+      <th>Teamleden</th>
+      <th>Verwijderen</th>
+    </tr></thead>
+    <tbody><tr *ngFor="let team of teams">
+      <td>{{team.name}}</td>
+      <td><a class="btn" data-toggle="modal" data-target="#editTeam"><fa-icon [icon]="faEdit" (click)="getTeamById(team.id)"></fa-icon></a></td>
+      <td><a class="btn" data-toggle="modal" data-target="#teammembers"><fa-icon [icon]="faGroup" (click)="getTeamMembers(team.id)"></fa-icon></a></td>
+      <td><a class="btn" data-toggle="modal" data-target="#deleteTeam"><fa-icon [icon]="faTrash" (click)="setId(team.id)"></fa-icon></a></td>
+    </tr></tbody>
+  </table>
+</div>
+
+<!-- Modal team toevoegen -->
+<div class="modal fade" id="addTeam" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel4">Team toevoegen</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form #addTeamForm="ngForm" (ngSubmit)="addTeam(addTeamForm.value)">
+        <div class="modal-body">
+
+          <div *ngIf="errors" class="alert alert-danger">
+            Er zijn fouten opgetreden. Corrigeer deze en probeer het opnieuw.
+          </div>
+          <div *ngIf="message" class="alert alert-success">
+            {{message}}
+          </div>
+
+          <div class="form-group">
+            <label for="teamnaam">Naam</label>
+            <input name="teamnaam" type="text" class="form-control" id="teamnaam" [ngClass]="{ 'is-invalid': errors }" ngModel>
+            <div *ngIf="errors" class="invalid-feedback">
+              <p *ngFor="let error of errors.name">{{error}}</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="manager">Manager</label>
+            <select name="manager_id" id="manager" class="form-control" [ngClass]="{ 'is-invalid': errors?.manager_id }" ngModel>
+              <option>Kies manager</option>
+              <option *ngFor="let manager of managers" value="{{manager?.id}}">{{manager?.name}}</option>
+            </select>
+            <div *ngIf="errors" class="invalid-feedback">
+              <p *ngFor="let error of errors.name">{{error}}</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="sector_id">Sector</label>
+            <select name="sector_id" id="sector_id" class="form-control" [ngClass]="{ 'is-invalid': errors?.sector }" ngModel>
+              <option>Kies sector</option>
+              <option *ngFor="let sector of sectors" value="{{sector?.id}}">{{sector?.name}}</option>
+            </select>
+            <div *ngIf="errors" class="invalid-feedback">
+              <p *ngFor="let error of errors.name">{{error}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Sluiten</button>
+          <button type="submit" class="btn btn-primary">Toevoegen</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal team bewerken -->
+<div class="modal fade" id="editTeam" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel7">Team bewerken</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form #editTeamForm="ngForm" (ngSubmit)="editTeam(editTeamForm.value)">
+        <div class="modal-body">
+
+          <div *ngIf="errors" class="alert alert-danger">
+            Er zijn fouten opgetreden. Corrigeer deze en probeer het opnieuw.
+          </div>
+          <div *ngIf="message" class="alert alert-success">
+            {{message}}
+          </div>
+
+          <div class="form-group">
+            <label for="teamnaam2">Naam</label>
+            <input *ngIf="teaminfo" name="teamnaam" type="text" class="form-control" id="teamnaam2" [ngClass]="{ 'is-invalid': errors }" ngModel="{{teaminfo?.name}}">
+            <div *ngIf="errors" class="invalid-feedback">
+              <p *ngFor="let error of errors.name">{{error}}</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="manager2">Manager</label>
+            <select *ngIf="teaminfo" name="manager_id" id="manager2" class="form-control" [ngClass]="{ 'is-invalid': errors?.manager_id }" ngModel="{{teaminfo?.manager_id}}">
+              <option>Kies manager</option>
+              <option *ngFor="let manager of managers" value="{{manager?.id}}">{{manager?.name}}</option>
+            </select>
+            <div *ngIf="errors" class="invalid-feedback">
+              <p *ngFor="let error of errors.name">{{error}}</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="sector_id2">Sector</label>
+            <select name="sector_id" id="sector_id2" class="form-control" [ngClass]="{ 'is-invalid': errors?.sector_id }" ngModel="{{teaminfo?.sector_id}}">
+              <option>Kies sector</option>
+              <option *ngFor="let sector of sectors" value="{{sector?.id}}">{{sector?.name}}</option>
+            </select>
+            <div *ngIf="errors" class="invalid-feedback">
+              <p *ngFor="let error of errors.name">{{error}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Sluiten</button>
+          <button type="submit" class="btn btn-primary">Opslaan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal teamleden -->
+<div class="modal fade" id="teammembers" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Teamleden</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p *ngFor="let member of teammembers">{{member.user_name}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Sluiten</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Modal verwijderen -->
+  <div class="modal fade" id="deleteTeam" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Weet je het zeker?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="message" class="alert alert-success">
+            {{message}}
+          </div>
+
+          Weet je zeker dat je dit team wilt verwijderen?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuleren</button>
+          <button type="button" class="btn btn-danger" (click)="deleteTeam()">Verwijderen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<app-footer></app-footer>

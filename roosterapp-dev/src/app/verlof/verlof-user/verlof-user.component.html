@@ -1,0 +1,196 @@
+<app-header></app-header>
+
+<div class="container">
+  <h1 class="display-4">Verlof</h1>
+  <p>Bekijk hier je verlof aanvragen of plan een nieuwe aanvraag in.</p>
+
+  <div *ngIf="message" class="alert alert-success">
+    {{message}}
+  </div>
+
+  <button class="btn btn-success btn-bg" data-toggle="modal" data-target="#nieuweAanvraag"><fa-icon [icon]="faPlus"></fa-icon> Nieuwe aanvraag</button>
+
+  <table class="table table-light table-hover">
+    <thead>
+    <tr>
+      <th>Reden</th>
+      <th>Start</th>
+      <th>Einde</th>
+      <th>Aantal uren</th>
+      <th>Status</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let verlof of verlofData">
+        <td>{{verlof.reason}}</td>
+        <td>{{verlof.start}}</td>
+        <td>{{verlof.end}}</td>
+        <td>{{verlof.hours}}</td>
+        <td>{{verlof.status}}</td>
+        <td><button *ngIf="verlof.status == 'concept'" class="btn" data-toggle="modal" data-target="#bewerkAanvraag" (click)="getVerlofById(verlof.id)"><fa-icon [icon]="faEdit"></fa-icon></button>
+        <td><button *ngIf="verlof.status == 'concept'" class="btn" (click)="aanvraagIndienen(verlof.id)"><fa-icon [icon]="faIndienen"></fa-icon></button></td>
+        <td><button *ngIf="verlof.status == 'beoordeling' || verlof.status == 'concept'" class="btn" data-toggle="modal" data-target="#verwijderAanvraag" (click)="setId(verlof.id)"><fa-icon [icon]="faDelete"></fa-icon></button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Modal nieuwe aanvraag -->
+  <div class="modal fade" id="nieuweAanvraag" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Nieuwe aanvraag</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form #nieuweAanvraagForm="ngForm" (ngSubmit)="addNieuweAanvraag(nieuweAanvraagForm.value)">
+        <div class="modal-body">
+
+          <div *ngIf="errors" class="alert alert-danger">
+            Er is iets fout gegaan.
+          </div>
+          <div *ngIf="message" class="alert alert-success">
+            {{message}}
+          </div>
+
+            <div class="form-group">
+              <label for="reason">Reden:</label>
+              <input type="text" name="reden" id="reason" class="form-control" aria-describedby="reasonHelp" [ngClass]="{ 'is-invalid': errors?.reden }" ngModel>
+              <div *ngIf="errors?.reden" class="invalid-feedback">
+                <li *ngFor="let error of errors?.reden">{{error}}</li>
+              </div>
+              <small id="reasonHelp" class="form-text text-muted">
+                Geef de reden op voor het verlof. Bijvoorbeeld vakantie, een vrije dag enzovoort.
+              </small>
+            </div>
+            <div class="form-group">
+              <label for="startdatum">Startdatum:</label>
+              <input type="date" name="startdatum" id="startdatum" class="form-control" aria-describedby="startdatumHelp" [ngClass]="{ 'is-invalid': errors?.startdatum }" ngModel>
+              <div *ngIf="errors?.startdatum" class="invalid-feedback">
+                <li *ngFor="let error of errors?.startdatum">{{error}}</li>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="einddatum">Einddatum:</label>
+              <input type="date" name="einddatum" id="einddatum" class="form-control" aria-describedby="einddatumHelp" [ngClass]="{ 'is-invalid': errors?.einddatum }" ngModel>
+              <div *ngIf="errors?.einddatum" class="invalid-feedback">
+                <li *ngFor="let error of errors?.einddatum">{{error}}</li>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="hours">Aantal uren:</label>
+              <input type="number" name="hours" id="hours" class="form-control" aria-describedby="hoursHelp" [ngClass]="{ 'is-invalid': errors?.hours }" ngModel>
+              <div *ngIf="errors?.hours" class="invalid-feedback">
+                <li *ngFor="let error of errors?.hours">{{error}}</li>
+              </div>
+              <small id="hoursHelp" class="form-text text-muted">
+                Geef het aantal verlofuren op. De tool berekent automatisch het aantal uren op basis van de start- en einddatum, het aantal te werken uren per dag
+                en op basis van een vijfdaagse werkweek. Wijkt dit af? Pas dan de waarde aan.
+              </small>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Sluiten</button>
+          <button type="submit" class="btn btn-primary">Opslaan</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal bewerk aanvraag -->
+  <div class="modal fade" id="bewerkAanvraag" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel2">Bewerk aanvraag</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form #editAanvraagForm="ngForm" (ngSubmit)="editAanvraag(editAanvraagForm.value)">
+          <div class="modal-body">
+
+            <div *ngIf="errors" class="alert alert-danger">
+              Er is iets fout gegaan.
+            </div>
+            <div *ngIf="message" class="alert alert-success">
+              {{message}}
+            </div>
+
+            <div class="form-group">
+              <label for="reason2">Reden:</label>
+              <input type="text" name="reden" id="reason2" class="form-control" aria-describedby="reasonHelp2" [ngClass]="{ 'is-invalid': errors?.reden }" ngModel="{{verlofSingleData?.reason}}">
+              <div *ngIf="errors?.reden" class="invalid-feedback">
+                <li *ngFor="let error of errors?.reden">{{error}}</li>
+              </div>
+              <small id="reasonHelp2" class="form-text text-muted">
+                Geef de reden op voor het verlof. Bijvoorbeeld vakantie, een vrije dag enzovoort.
+              </small>
+            </div>
+            <div class="form-group">
+              <label for="startdatum2">Startdatum:</label>
+              <input type="date" name="startdatum" id="startdatum2" class="form-control" aria-describedby="startdatumHelp" [ngClass]="{ 'is-invalid': errors?.startdatum }" ngModel="{{verlofSingleData?.start}}">
+              <div *ngIf="errors?.startdatum" class="invalid-feedback">
+                <li *ngFor="let error of errors?.startdatum">{{error}}</li>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="einddatum2">Einddatum:</label>
+              <input type="date" name="einddatum" id="einddatum2" class="form-control" aria-describedby="einddatumHelp" [ngClass]="{ 'is-invalid': errors?.einddatum }" ngModel="{{verlofSingleData?.end}}">
+              <div *ngIf="errors?.einddatum" class="invalid-feedback">
+                <li *ngFor="let error of errors?.einddatum">{{error}}</li>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="hours2">Aantal uren:</label>
+              <input type="number" name="hours" id="hours2" class="form-control" aria-describedby="hoursHelp2" [ngClass]="{ 'is-invalid': errors?.hours }" ngModel="{{verlofSingleData?.hours}}">
+              <div *ngIf="errors?.hours" class="invalid-feedback">
+                <li *ngFor="let error of errors?.hours">{{error}}</li>
+              </div>
+              <small id="hoursHelp2" class="form-text text-muted">
+                Geef het aantal verlofuren op. De tool berekent automatisch het aantal uren op basis van de start- en einddatum, het aantal te werken uren per dag
+                en op basis van een vijfdaagse werkweek. Wijkt dit af? Pas dan de waarde aan.
+              </small>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Sluiten</button>
+            <button type="submit" class="btn btn-primary">Opslaan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal bevestig verwijderen -->
+  <div class="modal fade" id="verwijderAanvraag" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel3">Weet je het zeker?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="message" class="alert alert-success">
+            {{message}}
+          </div>
+
+          Weet je zeker dat je deze aanvraag wilt verwijderen?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuleren</button>
+          <button type="button" class="btn btn-danger" (click)="deleteAanvraag()">Verwijderen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

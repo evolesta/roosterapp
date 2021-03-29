@@ -1,0 +1,43 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" routerLink="/portal"><fa-icon [icon]="faClock"></fa-icon> RoosterApp V2</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/portal" routerLinkActive="active">Overzicht</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/bulk" routerLinkActive="active">Bulk Registreren</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/verlof-user" routerLinkActive="active">Verlof</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/settings" routerLinkActive="active">Instellingen</a>
+      </li>
+      <li *ngIf="userRole === 'manager'" class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Manager
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
+          <a class="dropdown-item" routerLink="/manager-insights">Rapportages</a>
+          <a class="dropdown-item" routerLink="/manager-verlof">Verlofaanvragen</a>
+        </div>
+      </li>
+      <li *ngIf="userRole === 'admin'" class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Beheer
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" routerLink="/admin-user">Gebruikerbeheer</a>
+          <a class="dropdown-item" routerLink="/admin-team">Teambeheer</a>
+          <a class="dropdown-item" routerLink="/admin-sector">Sectorbeheer</a>
+        </div>
+      </li>
+    </ul>
+    <a routerLink="/logout" class="btn btn-light"><fa-icon [icon]="SignOutIcon"></fa-icon> Uitloggen</a>
+  </div>
+</nav>

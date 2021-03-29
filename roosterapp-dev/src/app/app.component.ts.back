@@ -1,0 +1,47 @@
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import {HttpClient} from '@angular/common/http';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+
+export class AppComponent implements OnInit {
+
+  // constructor laden met HttpClient en de form Builder
+  constructor(
+    public fb: FormBuilder,
+    private http: HttpClient) {
+    this.form = this.fb.group({
+      username: [''],
+      password: [''],
+      stayloggedin: ['']
+    });
+  }
+  form: FormGroup;
+
+  // global var response declareren
+  loginSession = [];
+
+  ngOnInit() { }
+
+  // Form input velden ophalen en in een nieuw object plaatsen
+  submitForm() {
+    const formData: any = new FormData();
+    formData.append('username', this.form.get('username').value);
+    formData.append('password', this.form.get('password').value);
+    formData.append('stayloggedin', this.form.get('stayloggedin').value);
+
+    // Object opsturen naar Lumen API als POST request
+    this.http.post('http://roosterapp.local/login', formData).subscribe((data: any[]) => {
+        // Response van API uitlezen en in console tonen
+        console.log(data);
+
+        // Response in var plaatsen
+        this.loginSession = data;
+      }
+    );
+  }
+}

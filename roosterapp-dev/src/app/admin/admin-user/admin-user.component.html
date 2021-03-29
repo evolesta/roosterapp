@@ -1,0 +1,176 @@
+<app-header></app-header>
+
+<div class="container">
+  <h1 class="display-4">Gebruikerbeheer</h1>
+
+  <p>Beheer de huidige gebruikers binnen de applicatie.</p>
+
+  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addUser"><fa-icon [icon]="faAdd"></fa-icon> Gebruiker toevoegen</button>
+
+  <table class="table table-borderless table-hover">
+    <thead>
+    <tr>
+      <th>Naam</th>
+      <th>Gebruikersnaam</th>
+      <th>Actief</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let user of users">
+      <td>{{user.name}}</td>
+      <td>{{user.username}}</td>
+      <td><input type="checkbox" class="form-check-input" [checked]="user.active" disabled></td>
+      <td><a class="btn" data-toggle="modal" data-target="#editUser"><fa-icon [icon]="faEdit" (click)="getUserById(user.id)"></fa-icon></a></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Modal gebruiker toevoegen -->
+  <div class="modal fade" id="addUser" tabindex="-1" aria-labelledby="addUser" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel5">Gebruiker toevoegen</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div *ngIf="errors" class="alert alert-danger">
+          Er zijn fouten opgetreden bij de invoer. Corrigeer deze en probeer het opnieuw.
+        </div>
+        <div *ngIf="message" class="alert alert-success">
+          {{message}}
+        </div>
+        <form #addUserForm="ngForm" (ngSubmit)="addUser(addUserForm.value)">
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="naam">Naam</label>
+              <input type="text" name="naam" id="naam" class="form-control" [ngClass]="{ 'is-invalid': errors?.naam }" ngModel>
+              <div *ngIf="errors" class="invalid-feedback">
+                <p *ngFor="let error of errors?.naam">{{error}}</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="email">E-mailadres</label>
+              <input type="email" name="email" id="email" class="form-control" [ngClass]="{ 'is-invalid': errors?.email }" ngModel>
+              <div *ngIf="errors" class="invalid-feedback">
+                <p *ngFor="let error of errors?.email">{{error}}</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="gebruikersnaam">Gebruikersnaam</label>
+              <input type="text" name="gebruikersnaam" id="gebruikersnaam" class="form-control" [ngClass]="{ 'is-invalid': errors?.gebruikersnaam }" ngModel>
+              <div *ngIf="errors" class="invalid-feedback">
+                <p *ngFor="let error of errors?.gebruikersnaam">{{error}}</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="team">Team</label>
+              <select class="form-control" name="team" id="team" ngModel>
+                <option *ngFor="let team of teams" value="{{team?.id}}">{{team.name}}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="rol">Rol</label>
+              <select class="form-control" name="rol" id="rol" ngModel>
+                <option value="user">Gebruiker</option>
+                <option value="manager">Manager</option>
+                <option value="admin">Beheerder</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="werkuren">Werkuren per dag</label>
+              <input type="time" name="werkuren" id="werkuren" class="form-control" [ngClass]="{ 'is-invalid': errors?.werkuren }" ngModel>
+              <div *ngIf="errors" class="invalid-feedback">
+                <p *ngFor="let error of errors?.werkuren">{{error}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuleren</button>
+            <button type="submit" class="btn btn-success">Opslaan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal gebruiker bewerken -->
+  <div class="modal fade" id="editUser" tabindex="-1" aria-labelledby="addUser" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel1">Gebruiker bewerken</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div *ngIf="errors" class="alert alert-danger">
+          Er zijn fouten opgetreden bij de invoer. Corrigeer deze en probeer het opnieuw.
+        </div>
+        <div *ngIf="message" class="alert alert-success">
+          {{message}}
+        </div>
+        <form #editUserForm="ngForm" (ngSubmit)="editUser(editUserForm.value, userData.id)">
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="naam2">Naam</label>
+              <input type="text" name="naam" id="naam2" class="form-control" [ngClass]="{ 'is-invalid': errors?.naam }" ngModel="{{userData?.name}}">
+              <div *ngIf="errors" class="invalid-feedback">
+                <p *ngFor="let error of errors?.naam">{{error}}</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="email2">E-mailadres</label>
+              <input type="email" name="email" id="email2" class="form-control" [ngClass]="{ 'is-invalid': errors?.email }" ngModel="{{userData?.email}}">
+              <div *ngIf="errors" class="invalid-feedback">
+                <p *ngFor="let error of errors?.email">{{error}}</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="gebruikersnaam2">Gebruikersnaam</label>
+              <input type="text" name="gebruikersnaam" id="gebruikersnaam2" class="form-control" [ngClass]="{ 'is-invalid': errors?.gebruikersnaam }" value="{{userData?.username}}" disabled>
+              <div *ngIf="errors" class="invalid-feedback">
+                <p *ngFor="let error of errors?.gebruikersnaam">{{error}}</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="team2">Team</label>
+              <select class="form-control" name="team" id="team2" ngModel="{{assignedTeam?.Team_Id}}">
+                <option *ngFor="let team of teams" value="{{team?.id}}">{{team.name}}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="rol2">Rol</label>
+              <select class="form-control" name="rol" id="rol2" ngModel="{{userData?.role}}">
+                <option value="user">Gebruiker</option>
+                <option value="manager">Manager</option>
+                <option value="admin">Beheerder</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="werkuren2">Werkuren per dag</label>
+              <input type="time" name="werkuren" id="werkuren2" class="form-control" [ngClass]="{ 'is-invalid': errors?.werkuren }" ngModel="{{workHours?.workhours}}">
+              <div *ngIf="errors" class="invalid-feedback">
+                <p *ngFor="let error of errors?.werkuren">{{error}}</p>
+              </div>
+            </div>
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="active" name="active" ngModel="{{userData?.active}}">
+              <label for="active" class="custom-control-label">Actief</label>
+              <small id="help" class="form-text text-muted">Wanneer deze optie uit staat, wordt de toegang voor de gebruiker geweigerd.</small>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Sluiten</button>
+            <button type="submit" class="btn btn-success">Opslaan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<app-footer></app-footer>

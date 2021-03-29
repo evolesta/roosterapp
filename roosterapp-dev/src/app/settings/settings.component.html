@@ -1,0 +1,92 @@
+<app-header></app-header>
+
+<div class="container">
+  <h1 class="display-4">Instellingen</h1>
+
+  <div *ngIf="errors" class="alert alert-danger">Er zijn fouten opgetreden in de invoer. Corrigeer deze en probeer het opnieuw.</div>
+  <div *ngIf="message" class="alert alert-success">{{message}}</div>
+
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Gegevens</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">E-mail instellingen</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Werkuren</a>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+
+    <!-- Algemene gegevens wijzigen form -->
+    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+      <form #userinfoForm="ngForm" (ngSubmit)="submitUserinfo(userinfoForm.value)">
+        <div class="form-group">
+          <label for="username">Gebruikersnaam</label>
+          <input name="username" type="text" class="form-control" placeholder="{{userinfo?.data.username}}" id="username" readonly>
+        </div>
+        <div class="form-group">
+          <label for="name">Naam</label>
+          <input ngModel="{{userinfo?.data.name}}" name="name" class="form-control" type="text" id="name" [ngClass]="{ 'is-invalid': errors?.name }">
+          <div *ngIf="errors" class="invalid-feedback">
+            <p *ngFor="let error of errors.name">{{error}}</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">E-mail adres</label>
+          <input ngModel="{{userinfo?.data.email}}" type="email" name="email" class="form-control" id="email" [ngClass]="{ 'is-invalid': errors?.email }">
+          <div *ngIf="errors" class="invalid-feedback">
+            <p *ngFor="let error of errors.email">{{error}}</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="pass1">Wachtwoord</label>
+          <input name="pass1" type="password" class="form-control" id="pass1" ngModel [ngClass]="{ 'is-invalid': errors?.pass1 }">
+          <div *ngIf="errors" class="invalid-feedback">
+            <p *ngFor="let error of errors.pass1">{{error}}</p>
+          </div>
+          <small class="form-text text-muted">Laat deze velden leeg als je het wachtwoord ongewijzigd wilt laten.</small>
+        </div>
+        <div class="form-group">
+          <label for="pass2">Wachtwoord herhalen</label>
+          <input name="pass2" type="password" class="form-control" id="pass2" ngModel [ngClass]="{ 'is-invalid': errors?.pass2 }">
+          <div *ngIf="errors" class="invalid-feedback">
+            <p *ngFor="let error of errors.pass2">{{error}}</p>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-block btn-lg btn-primary"><fa-icon [icon]="faSave"></fa-icon> Opslaan</button>
+      </form>
+    </div>
+
+    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+      <p>Stel hier in of je wel of geen e-mails van ons wilt ontvangen.</p>
+      <form #emailNotification="ngForm" (ngSubmit)="submitEmailnotification(emailNotification.value)">
+        <div class="custom-control custom-switch">
+          <input type="checkbox" name="emailnotification" class="custom-control-input" id="emailSettings" [checked]="userinfo?.data.email_notification" ngModel>
+          <label class="custom-control-label" for="emailSettings">Ontvang e-mail notificaties</label>
+        </div><br>
+        <button class="btn btn-lg btn-block btn-primary" type="submit"><fa-icon [icon]="faSave"></fa-icon> Opslaan</button>
+      </form>
+    </div>
+
+    <!-- Werkuren wijzigen form -->
+    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+      <p>Pas hier het aantal uren aan die je per dag moet maken (volgens afspraken in rooster).</p>
+      <form #workhoursForm="ngForm" (ngSubmit)="submitWorkhours(workhoursForm.value)">
+        <div class="form-group">
+          <label for="workhours">Werkuren</label>
+          <input ngModel="{{userinfo?.workhours.workhours}}" name="workhours" type="time" id="workhours" class="form-control" [ngClass]="{ 'is-invalid': errors?.workhours }">
+          <div *ngIf="errors" class="invalid-feedback">
+            <p *ngFor="let error of errors.workhours">{{error}}</p>
+          </div>
+          <small class="form-text text-muted">Vul hier het aantal uren en minuten in.</small>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg btn-block"><fa-icon [icon]="faSave"></fa-icon> Opslaan</button>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<app-footer></app-footer>

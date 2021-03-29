@@ -1,0 +1,82 @@
+<app-header></app-header>
+
+<div class="container">
+  <h1 class="display-4">Registratie bewerken</h1>
+
+  <div *ngIf="errors" class="alert alert-danger">
+    Er zijn fouten opgetreden in de invoer. Corrigeer deze en probeer het opnieuw.
+  </div>
+  <div *ngIf="message" class="alert alert-success">
+    {{message}}
+  </div>
+
+  <!-- verwijder knop -->
+  <div class="row">
+    <div class="col-10"></div>
+    <div class="col-2">
+      <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirmDelete"><fa-icon [icon]="faTrash"></fa-icon> Verwijderen</button>
+    </div>
+  </div>
+
+  <form #editReg="ngForm" (ngSubmit)="submitForm(editReg.value)">
+    <div class="form-group">
+      <label for="date">Datum</label>
+      <input ngModel="{{regdata?.date}}" name="date" type="date" class="form-control" id="date" [ngClass]="{ 'is-invalid': errors?.error.date }">
+      <div *ngIf="errors?.error.date" class="invalid-feedback">
+        <p *ngFor="let error of errors.error.date">{{error}}</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="start">Start</label>
+      <input ngModel="{{regdata?.start}}" name="start" type="time" class="form-control" id="start" [ngClass]="{ 'is-invalid': errors?.error.start }">
+      <div *ngIf="errors?.error.start" class="invalid-feedback">
+        <p *ngFor="let error of errors.error.start">{{error}}</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="end">Einde</label>
+      <input ngModel="{{regdata?.end}}" name="end" type="time" class="form-control" id="end" [ngClass]="{ 'is-invalid': errors?.error.end }">
+      <div *ngIf="errors?.error.end" class="invalid-feedback">
+        <p *ngFor="let error of errors.error.end">{{error}}</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="workedHours">Gewerkte uren</label>
+      <input value="{{regdata?.workedHours}}" name="workedHours" class="form-control" id="workedHours" disabled>
+    </div>
+    <div class="form-group">
+      <label for="extraHours">Extra uren</label>
+      <input value="{{regdata?.extraHours}}" name="workedHours" class="form-control" id="extraHours" disabled>
+    </div>
+    <div class="custom-control custom-switch">
+      <input name="calc" type="checkbox" class="custom-control-input" id="calc" [checked]="regdata?.calc" ngModel="1">
+      <label class="custom-control-label" for="calc">Registratie berekenen in saldo</label>
+    </div>
+    <br>
+    <input type="hidden" name="id" ngModel="{{regdata?.id}}">
+    <button type="submit" class="btn btn-primary btn-lg btn-block"><fa-icon [icon]="faPlus"></fa-icon> Opslaan</button>
+  </form>
+</div>
+
+<!-- Modal cancel -->
+<div class="modal fade" id="confirmDelete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Weet je het zeker?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Weet je zeker dat je deze registratie wilt verwijderen?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"><fa-icon [icon]="faCancel"></fa-icon> Annuleren</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="deleteReg()"><fa-icon [icon]="faTrash"></fa-icon> Verwijderen</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

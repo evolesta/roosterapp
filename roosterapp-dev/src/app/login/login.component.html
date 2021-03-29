@@ -1,0 +1,29 @@
+<nav class="navbar navbar-dark bg-dark">
+  <span class="navbar-brand mb-0 h1">RoosterApp V2</span>
+</nav>
+
+<div class="container">
+
+  <div *ngIf="errors" class="alert alert-danger">{{errors.error.error}}</div>
+
+  <h1 class="display-4">Login</h1><br/>
+  <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm.value)">
+    <div class="form-group">
+      <label for="exampleInputEmail1">Gebruikersnaam</label>
+      <input type="text" class="form-control" id="exampleInputEmail1" name="username" ngModel>
+    </div>
+    <div class="form-group">
+      <label for="exampleInputPassword1">Wachtwoord</label>
+      <input type="password" class="form-control" id="exampleInputPassword1" name="password" ngModel>
+    </div>
+    <div class="form-group form-check">
+      <input type="checkbox" class="form-check-input" id="exampleCheck1" name="stayloggedin" ngModel>
+      <label class="form-check-label" for="exampleCheck1">Blijf ingelogd</label>
+      <small class="form-text text-muted">Gebruik deze optie alleen op vertrouwde apparaten.</small>
+    </div>
+    <div class="form-group">
+      <a routerLink="/reset-password">Wachtwoord vergeten</a>
+    </div>
+    <button type="submit" class="btn btn-primary btn-lg btn-block">Inloggen</button>
+  </form>
+</div>

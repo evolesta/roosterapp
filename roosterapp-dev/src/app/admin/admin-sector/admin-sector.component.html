@@ -1,0 +1,125 @@
+<app-header></app-header>
+
+<div class="container">
+  <h1 class="display-4">Sectorbeheer</h1>
+
+  <p>Sectoren staan bovenaan in de hiëarchie. Een team moet altijd gekoppeld worden aan een sector.</p>
+
+  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addSector"><fa-icon [icon]="faAdd"></fa-icon> Sector toevoegen</button>
+
+  <table class="table table-borderless table-hover">
+    <thead>
+    <tr>
+      <th>Naam</th>
+      <th></th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let sector of sectorData">
+      <td>{{sector.name}}</td>
+      <td><button class="btn" data-toggle="modal" data-target="#editSector"><fa-icon [icon]="faEdit" (click)="getSectorById(sector.id)"></fa-icon></button></td>
+      <td><button class="btn" data-toggle="modal" data-target="#deleteSector"><fa-icon [icon]="faTrash" (click)="setId(sector.id)"></fa-icon></button></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Modal sector toevoegen -->
+  <div class="modal fade" id="addSector" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Sector toevoegen</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form #addSectorForm="ngForm" (ngSubmit)="addSector(addSectorForm.value)">
+          <div class="modal-body">
+
+            <div *ngIf="errors" class="alert alert-danger">
+              Er zijn fouten opgetreden. Corrigeer deze en probeer het opnieuw.
+            </div>
+            <div *ngIf="message" class="alert alert-success">
+              {{message}}
+            </div>
+
+            <div class="form-group">
+              <label for="name">Naam</label>
+              <input name="name" type="text" class="form-control" id="name" [ngClass]="{ 'is-invalid': errors }" ngModel>
+              <div *ngIf="errors" class="invalid-feedback">
+                <p *ngFor="let error of errors.name">{{error}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Sluiten</button>
+            <button type="submit" class="btn btn-primary">Toevoegen</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal bewerken sector -->
+  <div class="modal fade" id="editSector" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel1">Sector bewerken</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form #editSectorForm="ngForm" (ngSubmit)="editSector(editSectorForm.value)">
+          <div class="modal-body">
+            <div *ngIf="errors" class="alert alert-danger">
+              Er zijn fouten opgetreden. Corrigeer deze en probeer het opnieuw.
+            </div>
+            <div *ngIf="message" class="alert alert-success">
+              {{message}}
+            </div>
+
+            <div class="form-group">
+              <label for="name2">Naam</label>
+              <input *ngIf="sector" ngModel="{{sector.name}}" name="name" type="text" class="form-control" id="name2" [ngClass]="{ 'is-invalid': errors }">
+              <div *ngIf="errors" class="invalid-feedback">
+                <p *ngFor="let error of errors.name">{{error}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Sluiten</button>
+            <button type="submit" class="btn btn-primary">Opslaan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal bevestig verwijderen -->
+  <div class="modal fade" id="deleteSector" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel3">Weet je het zeker?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="message" class="alert alert-success">
+            {{message}}
+          </div>
+          Weet je zeker dat je deze sector wilt verwijderen?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuleren</button>
+          <button type="button" class="btn btn-danger" (click)="deleteSector(id)">Verwijder</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

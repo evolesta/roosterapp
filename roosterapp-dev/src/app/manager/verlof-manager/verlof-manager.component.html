@@ -1,0 +1,64 @@
+<app-header></app-header>
+
+<div class="container">
+  <h1 class="display-4">Verlof aanvragen</h1>
+
+  <div *ngIf="message" class="alert alert-success">{{message}}</div>
+
+  <h3>Openstaande aanvragen (to do):</h3>
+
+  <table class="table table-light table-hover table-sm">
+    <thead>
+    <tr>
+      <th>Aanvrager</th>
+      <th>Reden</th>
+      <th>Start</th>
+      <th>Einde</th>
+      <th>Aantal uren</th>
+      <th>Status</th>
+      <th>Goedkeuren</th>
+      <th>Afkeuren</th>
+    </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let verlofRequest of newVerlofRequests">
+        <td>{{verlofRequest.name}}</td>
+        <td>{{verlofRequest.reason}}</td>
+        <td>{{verlofRequest.start}}</td>
+        <td>{{verlofRequest.end}}</td>
+        <td>{{verlofRequest.hours}}</td>
+        <td>{{verlofRequest.status}}</td>
+        <td><button *ngIf="verlofRequest.status === 'beoordeling'" class="btn" (click)="acceptRequest(verlofRequest.verlof_id)"><fa-icon [icon]="faCheck"></fa-icon></button></td>
+        <td><button *ngIf="verlofRequest.status === 'beoordeling'" class="btn" (click)="denyRequest(verlofRequest.verlof_id)"><fa-icon [icon]="faCross"></fa-icon></button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <br>
+  <h3>Afgehandelde aanvragen:</h3>
+
+  <table class="table table-light table-hover table-sm">
+    <thead>
+    <tr>
+      <th>Aanvrager</th>
+      <th>Reden</th>
+      <th>Start</th>
+      <th>Einde</th>
+      <th>Aantal uren</th>
+      <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let verlof of verloffen">
+      <td>{{verlof.name}}</td>
+      <td>{{verlof.reason}}</td>
+      <td>{{verlof.start}}</td>
+      <td>{{verlof.end}}</td>
+      <td>{{verlof.hours}}</td>
+      <td>{{verlof.status}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<app-footer></app-footer>

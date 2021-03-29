@@ -1,0 +1,37 @@
+<nav class="navbar navbar-dark bg-dark">
+  <span class="navbar-brand mb-0 h1">RoosterApp V2</span>
+</nav>
+
+<div class="container">
+  <h1 class="display-4">Account activeren</h1>
+  <p>Maak een nieuw wachtwoord aan om je activatie te voltooien.</p>
+
+  <div *ngIf="message" class="alert alert-success">
+    {{message}}
+  </div>
+
+  <div *ngIf="errors" class="alert alert-danger">
+    Er zijn fouten opgetreden.
+    <p *ngIf="errors.error">De opgegeven gebruiker is reeds geactiveerd. Probeer in te loggen: <a routerLink="/">Inloggen</a> </p>
+  </div>
+
+  <form #activateUserForm="ngForm" (ngSubmit)="submitForm(activateUserForm.value)">
+    <div class="form-group">
+      <label for="wachtwoord">Nieuw wachtwoord:</label>
+      <input type="password" class="form-control" id="wachtwoord" name="wachtwoord" [ngClass]="{ 'is-invalid': errors?.wachtwoord }" ngModel>
+      <div *ngIf="errors?.wachtwoord" class="invalid-feedback">
+        <li *ngFor="let error of errors.wachtwoord">{{error}}</li>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="wachtwoord2">Wachtwoord herhalen:</label>
+      <input type="password" class="form-control" id="wachtwoord2" name="wachtwoord2" [ngClass]="{ 'is-invalid': errors?.wachtwoord2 }" ngModel>
+      <div *ngIf="errors?.wachtwoord2" class="invalid-feedback">
+        <li *ngFor="let error of errors.wachtwoord2">{{error}}</li>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary btn-lg btn-block"><fa-icon [icon]="faCheck"></fa-icon> Account activeren</button>
+  </form>
+</div>
+
+<app-footer></app-footer>

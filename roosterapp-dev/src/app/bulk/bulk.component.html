@@ -1,0 +1,47 @@
+<app-header></app-header>
+
+<div class="container">
+  <h1 class="display-4">Bulk registratie</h1>
+  <p>Hier kun je tot maximaal 20 registraties tegelijk invoeren. Vul alle velden in.</p>
+
+  <div *ngIf="errors" class="alert alert-danger">{{errors.error}}</div>
+
+      <div class="row">
+      <div class="col">
+        Datum:
+      </div>
+      <div class="col">
+        Start:
+      </div>
+      <div class="col">
+        Einde:
+      </div>
+        <div class="col-1"></div>
+    </div>
+  <form [formGroup]="bulkForm">
+    <div formArrayName="registration">
+      <div *ngFor="let reg of registrations().controls; let i = index;" [formGroupName]="i" class="row">
+      <div class="col">
+        <input type="date" class="form-control" formControlName="date">
+      </div>
+    <div class="col">
+        <input type="time" class="form-control" formControlName="start">
+      </div>
+      <div class="col">
+        <input type="time" class="form-control" formControlName="end">
+      </div>
+      <div class="col-1">
+        <button (click)="removeRow(i)" class="btn"><fa-icon [icon]="faTrash"></fa-icon></button>
+      </div></div></div><br>
+    <div class="row">
+      <div class="col">
+        <button (click)="addRow()" type="submit" class="btn btn-info btn-lg btn-block"><fa-icon [icon]="faLevelDown"></fa-icon> Rij toevoegen</button>
+      </div>
+      <div class="col">
+        <button (click)="submitForm()" type="submit" class="btn btn-primary btn-lg btn-block"><fa-icon [icon]="faPlus"></fa-icon> Registraties invoeren</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<app-footer></app-footer>

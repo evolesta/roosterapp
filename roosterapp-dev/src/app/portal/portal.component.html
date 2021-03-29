@@ -1,0 +1,92 @@
+<app-header></app-header>
+
+<div class="container">
+  <h1 class="display-4">Welkom, {{name}}!</h1>
+
+  <h3>Wil je <fa-icon [icon]="faStopwatch"></fa-icon> klokken?</h3><br>
+
+  <app-portal-noregform *ngIf="showNoreg" (formEvent)="getData()"></app-portal-noregform>
+  <app-portal-startreg *ngIf="showStartreg" [respdata]="response" (formEvent)="getData()"></app-portal-startreg>
+  <app-portal-allreg *ngIf="showAllreg" [respdata]="response"></app-portal-allreg>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-3">
+      <a class="btn btn-info" data-toggle="modal" data-target="#urenopnemen"><fa-icon [icon]="faThumThack"></fa-icon> Uren opnemen</a>
+    </div>
+    <div class="col-9">
+      <div class="saldo"><h1><fa-icon [icon]="faUserClock"></fa-icon> {{saldo}}</h1></div>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-borderless table-hover">
+      <thead class="thead-dark">
+      <tr>
+        <th>Datum</th>
+        <th>Start</th>
+        <th>Eind</th>
+        <th>Gewerkte uren</th>
+        <th>Extra uren</th>
+      </tr></thead>
+
+      <tbody>
+        <tr *ngFor="let reg of allRegs" (click)="editReg(reg.id)">
+          <td>{{reg.date}}</td>
+          <td>{{reg.start}}</td>
+          <td>{{reg.end}}</td>
+          <td>{{reg.workedHours}}</td>
+          <td>{{reg.extraHours}}</td>
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+</div>
+
+<!-- Modal uren opnemen -->
+<div class="modal fade" id="urenopnemen" tabindex="-1" aria-labelledby="urenopnemen" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Uren opnemen</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form #urenOpnemenForm="ngForm" (ngSubmit)="submitUrenOpnemen(urenOpnemenForm.value)">
+      <div class="modal-body">
+        <div *ngIf="message" class="alert alert-success">
+          {{message}}
+        </div>
+        <div *ngIf="errors" class="alert alert-danger">
+          Er zijn fouten opgetreden.
+        </div>
+
+        <p>Neem een aantal uren op van het resterende saldo.</p>
+          <div class="form-group">
+            <label for="datum">Datum:</label>
+            <input type="date" name="datum" class="form-control" id="datum" ngModel="{{curDate}}" [ngClass]="{ 'is-invalid': errors?.datum }">
+            <div *ngIf="errors?.datum" class="invalid-feedback">
+              <p *ngFor="let error of errors?.datum">{{error}}</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="uren">Aantal uren:</label>
+            <input type="time" name="uren" id="uren" class="form-control" ngModel [ngClass]="{ 'is-invalid': errors?.uren }">
+            <div *ngIf="errors?.uren" class="invalid-feedback">
+              <p *ngFor="let error of errors?.uren">{{error}}</p>
+            </div>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"><fa-icon [icon]="faCross"></fa-icon> Sluiten</button>
+        <button type="submit" class="btn btn-success"><fa-icon [icon]="faAdd"></fa-icon> Invoeren</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>
